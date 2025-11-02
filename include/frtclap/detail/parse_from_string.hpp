@@ -2,10 +2,25 @@
 
 #include <string>
 
+#include "frtclap/magic_enums.hpp"
+
 namespace frtclap::detail
 {
     template <typename T>
-    struct parse_from_string_impl;
+    struct parse_from_string_impl
+    {
+        static T apply(std::string_view input)
+        {
+            if constexpr (std::is_enum_v<T>)
+                return frtclap::string_to_enum<T>(input);
+
+            else
+            {
+                // The rest is not implemented yet
+                static_assert(false);
+            }
+        }
+    };
 
     template <>
     struct parse_from_string_impl<int>

@@ -23,7 +23,7 @@ namespace frtclap::detail
                                                                   is_vector_v<field_type_t<N, T>> )
                                                     {
                                                         if constexpr (N != field_count_ - 1)
-                                                            throw std::runtime_error("asdf");
+                                                            throw std::runtime_error("Container has to be the last element!");
 
                                                         output = true;
                                                     }
@@ -48,7 +48,7 @@ namespace frtclap::detail
             else
             {
                 if (field_count_ != input.size())
-                    throw std::runtime_error("asdf");
+                    throw std::runtime_error("Input count does not match field count!");
 
                 return [&] <std::size_t... Is> (std::index_sequence<Is...>)
                        {
@@ -76,7 +76,7 @@ namespace frtclap::detail
         static std::string apply(std::span<const std::string_view> input)
         {
             if (!input.size())
-                throw std::runtime_error("asdf");
+                throw std::runtime_error("Input is empty!");
 
             std::string out = parse_from_string<std::string>(input.front());
 
@@ -109,7 +109,7 @@ namespace frtclap::detail
         {
             std::array<T, N> out;
             if (input.size() != N)
-                throw std::runtime_error("asdf");
+                throw std::runtime_error("Input count does not match the array size!");
 
             for (std::size_t i = 0; i < input.size(); ++i)
                 out[i] = parse_from_string<T>(input[i]);

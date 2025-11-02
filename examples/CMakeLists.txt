@@ -22,3 +22,11 @@ target_include_directories(
     PRIVATE
     ${PROJECT_SOURCE_DIR}/include
 )
+
+add_executable(enums enums.cpp)
+
+target_include_directories(
+    enums
+    PRIVATE
+    ${PROJECT_SOURCE_DIR}/include
+)

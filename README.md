@@ -188,6 +188,7 @@ This approach is heavily inspired by **Boost.PFR**, but all reflection logic is 
 - [ ] Short flags (`-i`, `-o`)  
 - [ ] Default values and optional arguments  
 - [ ] Nested subcommands  
+- [ ] Improve enum support
 - [ ] Validation and custom error reporting  
 - [ ] Better diagnostics for invalid CLI input  
 
