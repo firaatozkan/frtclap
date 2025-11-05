@@ -109,14 +109,14 @@ namespace frtclap::detail
                    {
                        std::optional<Subcommand> out;
 
-                       ([&] <std::size_t N>
+                       ([&]
                         {
-                            using Type = subcommand_alternative_t<N, Subcommand>;
+                            using Type = subcommand_alternative_t<Is, Subcommand>;
 
-                            if (names[N] == positionals.front())
+                            if (names[Is] == positionals.front())
                                 out = Subcommand { parse_from_span<Type>(positionals.subspan(1))};
                         }
-                        .template operator()<Is>(), ...);
+                        (), ...);
 
                        if (!out.has_value())
                            throw std::runtime_error("Couldn't parse subcommand successfully!");

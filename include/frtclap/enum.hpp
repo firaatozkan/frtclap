@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <stdexcept>
 #include <string_view>
 #include <source_location>
@@ -19,15 +20,25 @@ namespace frtclap
 
     namespace detail
     {
-        template <auto V>
-        [[nodiscard]] consteval std::string_view enum_name_impl()
+        template <auto Enum>
+        [[nodiscard]] consteval std::string_view enum_name_impl() noexcept
         {
             std::string_view sv = std::source_location::current().function_name();
-            constexpr std::string_view name_skip = "enum_name_impl<";
-            sv.remove_prefix(sv.find(name_skip) + name_skip.size());
-            sv.remove_suffix(sv.size() - sv.find_first_of(">"));
 
-            if (sv.starts_with("(enum"))
+#if defined(_MSC_VER) && !defined(__clang__)
+            constexpr std::string_view begin_skip = "class std::basic_string_view<char,struct std::char_traits<char> > __cdecl frtclap::detail::enum_name_impl<";
+            constexpr std::string_view end_skip = ">(void) noexcept";
+#elif defined(__clang__)
+            constexpr std::string_view begin_skip = "std::string_view frtclap::detail::enum_name_impl() [Enum = ";
+            constexpr std::string_view end_skip = "]";
+#elif defined(__GNUC__)
+            constexpr std::string_view begin_skip = "consteval std::string_view frtclap::detail::enum_name_impl() [with auto Enum = ";
+            constexpr std::string_view end_skip = "; std::string_view = std::basic_string_view<char>]";
+#endif
+            sv.remove_prefix(begin_skip.size());
+            sv.remove_suffix(end_skip.size());
+
+            if (sv.starts_with("("))
                 return "<unknown>";
 
             return sv;
@@ -41,15 +52,13 @@ namespace frtclap
 
             [&] <T... Is> (enum_sequence<T, Is...>)
             {
-                using T2 = T;
-
-                ([&] <T2 N>
+                ([&]
                  {
-                     constexpr auto name = enum_name_impl<N>();
+                     constexpr auto name = enum_name_impl<Is>();
                      if (name != "<unknown>")
-                         output.emplace_back(N, name);
+                         output.emplace_back(Is, name);
                  }
-                 .template operator()<Is>(), ...);
+                 (), ...);
             }
             (make_enum_sequence<T,
                                 static_cast<std::underlying_type_t<T>>(enum_range<T>::min),

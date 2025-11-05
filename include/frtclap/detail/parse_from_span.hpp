@@ -17,17 +17,17 @@ namespace frtclap::detail
                                            {
                                                bool output = false;
 
-                                               ([&] <std::size_t N>
+                                               ([&]
                                                 {
-                                                    if constexpr (is_container_v<field_type_t<N, T>>)
+                                                    if constexpr (is_container_v<field_type_t<Is, T>>)
                                                     {
-                                                        if constexpr (N != field_count_ - 1)
+                                                        if constexpr (Is != field_count_ - 1)
                                                             throw std::runtime_error("Container has to be the last element!");
 
                                                         output = true;
                                                     }
                                                 }
-                                                .template operator()<Is>(), ...);
+                                                (), ...);
 
                                                return output;
                                            }

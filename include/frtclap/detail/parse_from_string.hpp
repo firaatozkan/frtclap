@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "frtclap/magic_enums.hpp"
+#include "frtclap/enum.hpp"
 
 namespace frtclap::detail
 {

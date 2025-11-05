@@ -1,32 +1,18 @@
 
-add_executable(simple_example simple_example.cpp)
+function(run_test name)
+    add_executable(${name} ${name}.cpp)
+    target_include_directories(${name} PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
-target_include_directories(
-    simple_example
-    PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
-)
+    add_custom_command(
+        TARGET ${name}
+        POST_BUILD
+        COMMAND ${name}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Running ${name}..."
+    )
+endfunction()
 
-add_executable(rename rename.cpp)
-
-target_include_directories(
-    rename
-    PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
-)
-
-add_executable(subcommands subcommands.cpp)
-
-target_include_directories(
-    subcommands
-    PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
-)
-
-add_executable(enums enums.cpp)
-
-target_include_directories(
-    enums
-    PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
-)
+run_test(simple_example)
+run_test(rename)
+run_test(subcommands)
+run_test(enums)
