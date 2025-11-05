@@ -11,20 +11,28 @@ namespace frtclap
 {
     namespace detail
     {
-        template <typename>
-        [[nodiscard]] consteval std::string_view subcommand_name_impl()
+        template <typename T>
+        [[nodiscard]] consteval std::string_view subcommand_name_impl() noexcept
         {
-            constexpr std::string_view first_skip = "subcommand_name_impl<";
-            constexpr std::string_view second_skip = ">(void)";
+            std::string_view sv = std::source_location::current().function_name();
 
-            std::string_view sv = std::source_location::current().function_name();            
-            sv.remove_prefix(sv.find(first_skip) + first_skip.size());
-            sv.remove_suffix(sv.size() - sv.find(second_skip));
+#if defined(_MSC_VER) && !defined(__clang__)
+            constexpr std::string_view begin_skip = "class std::basic_string_view<char,struct std::char_traits<char> > __cdecl frtclap::detail::subcommand_name_impl<";
+            constexpr std::string_view end_skip = ">(void) noexcept";
+#elif defined(__clang__)
+            constexpr std::string_view begin_skip = "std::string_view frtclap::detail::subcommand_name_impl() [T = ";
+            constexpr std::string_view end_skip = "]";
+#elif defined(__GNUC__)
+            constexpr std::string_view begin_skip = "consteval std::string_view frtclap::detail::subcommand_name_impl() [with T = ";
+            constexpr std::string_view end_skip = "; std::string_view = std::basic_string_view<char>]";
+#endif
+            sv.remove_prefix(begin_skip.size());
+            sv.remove_suffix(end_skip.size());
 
-            if (sv.starts_with("class "))
-                sv.remove_prefix(6);
-            else if (sv.starts_with("struct "))
+            if (sv.starts_with("struct "))
                 sv.remove_prefix(7);
+            else if (sv.starts_with("class "))
+                sv.remove_prefix(6);
 
             return sv;
         }
@@ -41,7 +49,7 @@ namespace frtclap
             static constexpr std::string_view value = S;
         };
 
-    } // namespace detail
+    } // namespace frtclap::detail
 
     template <typename Subcommand>
     [[nodiscard]] consteval auto subcommand_names()

@@ -7,13 +7,13 @@
 namespace frtclap::detail
 {
     template <class... Args>
-    constexpr auto make_tuple_of_references(Args&&... args) noexcept
+    [[nodiscard]] constexpr auto make_tuple_of_references(Args&&... args) noexcept
     {
         return std::tuple<Args&...>{args...};
     }
 
     template <typename T, typename Arg>
-    constexpr decltype(auto) add_cv_like(Arg& arg) noexcept
+    [[nodiscard]] constexpr decltype(auto) add_cv_like(Arg& arg) noexcept
     {
         if constexpr (std::is_const<T>::value && std::is_volatile<T>::value)
             return const_cast<const volatile Arg &>(arg);
@@ -29,40 +29,40 @@ namespace frtclap::detail
     }
 
     template <typename T, typename Sb, typename Arg>
-    constexpr decltype(auto) workaround_cast(Arg& arg) noexcept
+    [[nodiscard]] constexpr decltype(auto) workaround_cast(Arg& arg) noexcept
     {
         using output_arg_t = std::conditional_t<!std::is_reference<Sb>(), decltype(detail::add_cv_like<T>(arg)), Sb>;
         return const_cast<output_arg_t>(arg);
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T &, size_t_<0>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T &, size_t_<0>) noexcept
     {
         return std::tuple<>{};
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<1>, std::enable_if_t<std::is_class<std::remove_cv_t<T>>::value>* = nullptr) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<1>, std::enable_if_t<std::is_class<std::remove_cv_t<T>>::value>* = nullptr) noexcept
     {
         auto& [a] = const_cast<std::remove_cv_t<T>&>(val);
         return make_tuple_of_references(workaround_cast<T, decltype(a)>(a));
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<1>, std::enable_if_t<!std::is_class<std::remove_cv_t<T>>::value>* = nullptr) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<1>, std::enable_if_t<!std::is_class<std::remove_cv_t<T>>::value>* = nullptr) noexcept
     {
         return make_tuple_of_references(val);
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<2>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<2>) noexcept
     {
         auto& [a, b] = const_cast<std::remove_cv_t<T>&>(val);
         return make_tuple_of_references(workaround_cast<T, decltype(a)>(a), workaround_cast<T, decltype(b)>(b));
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<3>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<3>) noexcept
     {
         auto& [a, b, c] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -71,7 +71,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<4>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<4>) noexcept
     {
         auto& [a, b, c, d] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -81,7 +81,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<5>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<5>) noexcept
     {
         auto& [a, b, c, d, e] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -91,7 +91,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<6>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<6>) noexcept
     {
         auto& [a, b, c, d, e, f] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -101,7 +101,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<7>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<7>) noexcept
     {
         auto& [a, b, c, d, e, f, g] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -112,7 +112,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<8>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<8>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -123,7 +123,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<9>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<9>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -134,7 +134,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<10>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<10>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -146,7 +146,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<11>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<11>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -158,7 +158,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<12>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<12>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -170,7 +170,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<13>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<13>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -183,7 +183,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<14>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<14>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -196,7 +196,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<15>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<15>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -209,7 +209,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<16>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<16>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -223,7 +223,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<17>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<17>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -237,7 +237,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<18>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<18>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -251,7 +251,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<19>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<19>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -266,7 +266,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<20>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<20>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -281,7 +281,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<21>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<21>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -296,7 +296,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<22>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<22>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -312,7 +312,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<23>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<23>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -328,7 +328,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<24>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<24>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -344,7 +344,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<25>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<25>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -361,7 +361,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<26>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<26>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -378,7 +378,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<27>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<27>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -395,7 +395,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<28>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<28>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -413,7 +413,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<29>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<29>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -431,7 +431,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<30>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<30>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -449,7 +449,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<31>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<31>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -468,7 +468,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<32>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<32>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -487,7 +487,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<33>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<33>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -506,7 +506,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<34>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<34>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -526,7 +526,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<35>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<35>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -546,7 +546,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<36>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<36>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -566,7 +566,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<37>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<37>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -587,7 +587,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<38>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<38>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -608,7 +608,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<39>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<39>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -629,7 +629,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<40>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<40>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -651,7 +651,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<41>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<41>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -673,7 +673,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<42>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<42>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -695,7 +695,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<43>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<43>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -718,7 +718,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<44>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<44>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -741,7 +741,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<45>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<45>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -764,7 +764,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<46>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<46>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -788,7 +788,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<47>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<47>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z] = const_cast<std::remove_cv_t<T>&>(val);
 
@@ -812,7 +812,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<48>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<48>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa] = const_cast<std::remove_cv_t<T>&>(val);
@@ -837,7 +837,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<49>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<49>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab] = const_cast<std::remove_cv_t<T>&>(val);
@@ -863,7 +863,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<50>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<50>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac] = const_cast<std::remove_cv_t<T>&>(val);
@@ -889,7 +889,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<51>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<51>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad] = const_cast<std::remove_cv_t<T>&>(val);
@@ -915,7 +915,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<52>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<52>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae] = const_cast<std::remove_cv_t<T>&>(val);
@@ -942,7 +942,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<53>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<53>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af] = const_cast<std::remove_cv_t<T>&>(val);
@@ -969,7 +969,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<54>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<54>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag] = const_cast<std::remove_cv_t<T>&>(val);
@@ -996,7 +996,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<55>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<55>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1024,7 +1024,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<56>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<56>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1052,7 +1052,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<57>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<57>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1080,7 +1080,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<58>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<58>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1109,7 +1109,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<59>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<59>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1138,7 +1138,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<60>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<60>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1167,7 +1167,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<61>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<61>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1197,7 +1197,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<62>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<62>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1227,7 +1227,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<63>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<63>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1257,7 +1257,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<64>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<64>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1288,7 +1288,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<65>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<65>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1319,7 +1319,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<66>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<66>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1350,7 +1350,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<67>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<67>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1382,7 +1382,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<68>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<68>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1414,7 +1414,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<69>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<69>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1446,7 +1446,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<70>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<70>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1479,7 +1479,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<71>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<71>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1512,7 +1512,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<72>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<72>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1545,7 +1545,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<73>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<73>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1579,7 +1579,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<74>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<74>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1613,7 +1613,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<75>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<75>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1647,7 +1647,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<76>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<76>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1682,7 +1682,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<77>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<77>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1717,7 +1717,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<78>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<78>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1752,7 +1752,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<79>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<79>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1788,7 +1788,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<80>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<80>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1824,7 +1824,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<81>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<81>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1860,7 +1860,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<82>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<82>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1897,7 +1897,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<83>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<83>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1934,7 +1934,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<84>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<84>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN] = const_cast<std::remove_cv_t<T>&>(val);
@@ -1971,7 +1971,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<85>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<85>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP] = const_cast<std::remove_cv_t<T>&>(val);
@@ -2009,7 +2009,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<86>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<86>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ] = const_cast<std::remove_cv_t<T>&>(val);
@@ -2047,7 +2047,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<87>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<87>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR] = const_cast<std::remove_cv_t<T>&>(val);
@@ -2085,7 +2085,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<88>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<88>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS] = const_cast<std::remove_cv_t<T>&>(val);
@@ -2124,7 +2124,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<89>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<89>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU] = const_cast<std::remove_cv_t<T>&>(val);
@@ -2163,7 +2163,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<90>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<90>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV] = const_cast<std::remove_cv_t<T>&>(val);
@@ -2202,7 +2202,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<91>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<91>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW] = const_cast<std::remove_cv_t<T>&>(val);
@@ -2242,7 +2242,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<92>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<92>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX] = const_cast<std::remove_cv_t<T>&>(val);
@@ -2282,7 +2282,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<93>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<93>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY] = const_cast<std::remove_cv_t<T>&>(val);
@@ -2322,7 +2322,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<94>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<94>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ] = const_cast<std::remove_cv_t<T>&>(val);
@@ -2363,7 +2363,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<95>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<95>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2405,7 +2405,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<96>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<96>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2447,7 +2447,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<97>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<97>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2490,7 +2490,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<98>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<98>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2533,7 +2533,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<99>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<99>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2576,7 +2576,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<100>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<100>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2620,7 +2620,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<101>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<101>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2664,7 +2664,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<102>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<102>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2708,7 +2708,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<103>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<103>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2753,7 +2753,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<104>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<104>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2798,7 +2798,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<105>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<105>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2843,7 +2843,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<106>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<106>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2889,7 +2889,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<107>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<107>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2935,7 +2935,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<108>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<108>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -2981,7 +2981,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<109>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<109>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3028,7 +3028,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<110>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<110>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3075,7 +3075,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<111>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<111>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3122,7 +3122,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<112>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<112>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3170,7 +3170,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<113>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<113>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3218,7 +3218,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<114>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<114>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3266,7 +3266,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<115>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<115>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3315,7 +3315,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<116>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<116>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3364,7 +3364,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<117>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<117>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3413,7 +3413,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<118>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<118>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3463,7 +3463,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<119>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<119>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3513,7 +3513,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<120>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<120>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3563,7 +3563,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<121>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<121>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3614,7 +3614,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<122>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<122>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3665,7 +3665,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<123>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<123>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3716,7 +3716,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<124>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<124>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3768,7 +3768,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<125>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<125>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3820,7 +3820,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<126>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<126>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3872,7 +3872,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<127>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<127>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3925,7 +3925,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<128>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<128>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -3978,7 +3978,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<129>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<129>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4031,7 +4031,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<130>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<130>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4085,7 +4085,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<131>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<131>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4139,7 +4139,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<132>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<132>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4193,7 +4193,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<133>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<133>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4248,7 +4248,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<134>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<134>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4303,7 +4303,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<135>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<135>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4358,7 +4358,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<136>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<136>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4414,7 +4414,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<137>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<137>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4470,7 +4470,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<138>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<138>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4526,7 +4526,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<139>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<139>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4583,7 +4583,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<140>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<140>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4640,7 +4640,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<141>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<141>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4697,7 +4697,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<142>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<142>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4756,7 +4756,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<143>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<143>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4815,7 +4815,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<144>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<144>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4874,7 +4874,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<145>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<145>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4934,7 +4934,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<146>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<146>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -4994,7 +4994,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<147>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<147>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5054,7 +5054,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<148>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<148>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5115,7 +5115,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<149>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<149>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5176,7 +5176,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<150>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<150>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5237,7 +5237,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<151>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<151>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5299,7 +5299,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<152>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<152>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5361,7 +5361,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<153>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<153>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5423,7 +5423,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<154>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<154>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5486,7 +5486,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<155>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<155>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5549,7 +5549,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<156>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<156>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5612,7 +5612,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<157>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<157>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5676,7 +5676,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<158>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<158>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5740,7 +5740,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<159>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<159>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5804,7 +5804,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<160>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<160>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5869,7 +5869,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<161>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<161>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5934,7 +5934,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<162>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<162>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -5999,7 +5999,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<163>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<163>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6065,7 +6065,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<164>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<164>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6131,7 +6131,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<165>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<165>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6197,7 +6197,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<166>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<166>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6264,7 +6264,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<167>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<167>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6331,7 +6331,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<168>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<168>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6398,7 +6398,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<169>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<169>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6466,7 +6466,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<170>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<170>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6534,7 +6534,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<171>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<171>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6602,7 +6602,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<172>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<172>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6671,7 +6671,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<173>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<173>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6740,7 +6740,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<174>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<174>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6809,7 +6809,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<175>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<175>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6879,7 +6879,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<176>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<176>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -6949,7 +6949,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<177>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<177>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7019,7 +7019,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<178>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<178>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7090,7 +7090,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<179>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<179>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7161,7 +7161,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<180>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<180>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7232,7 +7232,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<181>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<181>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7304,7 +7304,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<182>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<182>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7376,7 +7376,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<183>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<183>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7448,7 +7448,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<184>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<184>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7521,7 +7521,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<185>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<185>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7594,7 +7594,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<186>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<186>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7667,7 +7667,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<187>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<187>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7741,7 +7741,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<188>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<188>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7815,7 +7815,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<189>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<189>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7890,7 +7890,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<190>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<190>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -7966,7 +7966,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<191>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<191>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -8042,7 +8042,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<192>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<192>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -8118,7 +8118,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<193>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<193>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -8195,7 +8195,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<194>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<194>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -8272,7 +8272,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<195>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<195>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -8349,7 +8349,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<196>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<196>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -8427,7 +8427,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<197>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<197>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -8505,7 +8505,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<198>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<198>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -8583,7 +8583,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<199>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<199>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,
@@ -8662,7 +8662,7 @@ namespace frtclap::detail
     }
 
     template <class T>
-    constexpr auto tie_as_tuple(T& val, size_t_<200>) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val, size_t_<200>) noexcept
     {
         auto& [a, b, c, d, e, f, g, h, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, J, K, L, M, N, P, Q, R, S, U, V, W, X, Y, Z,
                aa, ab, ac, ad, ae, af, ag, ah, aj, ak, al, am, an, ap, aq, ar, as, at, au, av, aw, ax, ay, az, aA, aB, aC, aD, aE, aF, aG, aH, aJ, aK, aL, aM, aN, aP, aQ, aR, aS, aU, aV, aW, aX, aY, aZ,

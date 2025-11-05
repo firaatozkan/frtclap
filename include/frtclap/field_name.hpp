@@ -17,8 +17,23 @@ namespace frtclap
         [[nodiscard]] consteval std::string_view field_name_impl() noexcept
         {
             std::string_view sv = std::source_location::current().function_name();
-            sv.remove_suffix(sv.size() - sv.find_last_of(">"));
-            sv.remove_prefix(sv.find_last_of(">") + 1);
+
+#if defined(_MSC_VER) && !defined(__clang__)
+            constexpr std::string_view begin_skip = "class std::basic_string_view<char,struct std::char_traits<char> > __cdecl frtclap::detail::field_name_impl<";
+            constexpr std::string_view end_skip = ">(void) noexcept";
+            constexpr std::string_view backward = "->";
+#elif defined(__clang__)
+            constexpr std::string_view begin_skip = "std::string_view frtclap::detail::field_name_impl() [Ptr = ";
+            constexpr std::string_view end_skip = "]";
+            constexpr std::string_view backward = ".";
+#elif defined(__GNUC__)
+            constexpr std::string_view begin_skip = "consteval std::string_view frtclap::detail::field_name_impl() [with auto Ptr = (& do_not_use_this_object<";
+            constexpr std::string_view end_skip = "); std::string_view = std::basic_string_view<char>]";
+            constexpr std::string_view backward = "::";
+#endif
+            sv.remove_prefix(begin_skip.size());
+            sv.remove_suffix(end_skip.size());
+            sv.remove_prefix(sv.rfind(backward) + backward.size());
             return sv;
         }
 

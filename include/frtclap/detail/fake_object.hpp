@@ -1,5 +1,11 @@
 #pragma once
 
+#ifdef __clang__
+#   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wundefined-internal"
+#   pragma clang diagnostic ignored "-Wundefined-var-template"
+#endif
+
 namespace frtclap::detail
 {
     template <typename T>
@@ -12,9 +18,13 @@ namespace frtclap::detail
     extern const wrapper<T> do_not_use_this_object;
 
     template <typename T>
-    consteval const T& fake_object() noexcept
+    [[nodiscard]] consteval const T& fake_object() noexcept
     {
         return do_not_use_this_object<T>.data;
     }
 
 } // namespace frtclap::detail
+
+#ifdef __clang__
+#   pragma clang diagnostic pop
+#endif
