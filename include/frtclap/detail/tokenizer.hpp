@@ -53,7 +53,7 @@ namespace frtclap::detail
         }
 
         template <typename UserDefined>
-        UserDefined operator()() const
+        [[nodiscard]] UserDefined operator()() const
         {
             return [&] <std::size_t... Is> (std::index_sequence<Is...>)
                    {
@@ -66,7 +66,7 @@ namespace frtclap::detail
 
     private:
         template <typename UserDefined, std::size_t N>
-        auto create_field() const -> field_type_t<N, UserDefined>
+        [[nodiscard]] auto create_field() const -> field_type_t<N, UserDefined>
         {
             using FieldType = field_type_t<N, UserDefined>;
 
@@ -98,7 +98,7 @@ namespace frtclap::detail
         }
 
         template <typename Subcommand>
-        static Subcommand parse_subcommand(std::span<const std::string_view> positionals)
+        [[nodiscard]] static Subcommand parse_subcommand(std::span<const std::string_view> positionals)
         {
             if (!positionals.size())
                 throw std::runtime_error("Positionals are empty!");

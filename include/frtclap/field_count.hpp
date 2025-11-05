@@ -9,35 +9,35 @@ namespace frtclap
         struct any_lref
         {
             template <typename U>
-            constexpr operator U&() const && noexcept;
+            [[nodiscard]] constexpr operator U&() const && noexcept;
         };
 
         struct any_rref
         {
             template <typename U>
-            constexpr operator U&&() const && noexcept;
+            [[nodiscard]] constexpr operator U&&() const && noexcept;
         };
 
         template <typename T, std::size_t... Is>
-        consteval std::size_t field_count_lref(...)
+        [[nodiscard]] consteval std::size_t field_count_lref(...)
         {
             return sizeof...(Is) - 1;
         }
 
         template <typename T, std::size_t... Is>
-        consteval auto field_count_lref(int) -> decltype(T {((void) Is, any_lref{})...}, std::size_t{})
+        [[nodiscard]] consteval auto field_count_lref(int) -> decltype(T {((void) Is, any_lref{})...}, std::size_t{})
         {
             return field_count_lref<T, Is..., sizeof...(Is)>(0);
         }
 
         template <typename T, std::size_t... Is>
-        consteval std::size_t field_count_rref(...)
+        [[nodiscard]] consteval std::size_t field_count_rref(...)
         {
             return sizeof...(Is) - 1;
         }
 
         template <typename T, std::size_t... Is>
-        consteval auto field_count_rref(int) -> decltype(T {((void) Is, any_rref{})...}, std::size_t{})
+        [[nodiscard]] consteval auto field_count_rref(int) -> decltype(T {((void) Is, any_rref{})...}, std::size_t{})
         {
             return field_count_rref<T, Is..., sizeof...(Is)>(0);
         }

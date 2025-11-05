@@ -12,27 +12,27 @@ namespace frtclap
 
         type data;
 
-        constexpr operator T&() & noexcept
+        [[nodiscard]] constexpr operator T&() & noexcept
         {
             return data;
         }
 
-        constexpr operator const T&() const& noexcept
+        [[nodiscard]] constexpr operator const T&() const& noexcept
         {
             return data;
         }
 
-        constexpr operator volatile T&() volatile& noexcept
+        [[nodiscard]] constexpr operator volatile T&() volatile& noexcept
         {
             return data;
         }
 
-        constexpr operator const volatile T&() const volatile& noexcept
+        [[nodiscard]] constexpr operator const volatile T&() const volatile& noexcept
         {
             return data;
         }
 
-        constexpr operator T&&() && noexcept
+        [[nodiscard]] constexpr operator T&&() && noexcept
         {
             return std::move(data);
         }

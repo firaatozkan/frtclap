@@ -9,7 +9,7 @@ namespace frtclap::detail
     template <typename T>
     struct parse_from_span_impl
     {
-        static T apply(std::span<const std::string_view> input)
+        [[nodiscard]] static T apply(std::span<const std::string_view> input)
         {
             constexpr std::size_t field_count_ = field_count_v<T>;
 
@@ -19,8 +19,7 @@ namespace frtclap::detail
 
                                                ([&] <std::size_t N>
                                                 {
-                                                    if constexpr (is_array_v<field_type_t<N, T>> ||
-                                                                  is_vector_v<field_type_t<N, T>> )
+                                                    if constexpr (is_container_v<field_type_t<N, T>>)
                                                     {
                                                         if constexpr (N != field_count_ - 1)
                                                             throw std::runtime_error("Container has to be the last element!");
@@ -64,7 +63,7 @@ namespace frtclap::detail
     template <typename T, fixed_string S>
     struct parse_from_span_impl<rename<T, S>>
     {
-        static rename<T, S> apply(std::span<const std::string_view> input)
+        [[nodiscard]] static rename<T, S> apply(std::span<const std::string_view> input)
         {
             return rename<T, S> {parse_from_span_impl<T>::apply(input)};
         }
@@ -73,7 +72,7 @@ namespace frtclap::detail
     template <>
     struct parse_from_span_impl<std::string>
     {
-        static std::string apply(std::span<const std::string_view> input)
+        [[nodiscard]] static std::string apply(std::span<const std::string_view> input)
         {
             if (!input.size())
                 throw std::runtime_error("Input is empty!");
@@ -90,7 +89,7 @@ namespace frtclap::detail
     template <typename T, typename A>
     struct parse_from_span_impl<std::vector<T, A>>
     {
-        static std::vector<T, A> apply(std::span<const std::string_view> input)
+        [[nodiscard]] static std::vector<T, A> apply(std::span<const std::string_view> input)
         {
             std::vector<T, A> out;
             out.reserve(input.size());
@@ -105,7 +104,7 @@ namespace frtclap::detail
     template <typename T, std::size_t N>
     struct parse_from_span_impl<std::array<T, N>>
     {
-        static std::array<T, N> apply(std::span<const std::string_view> input)
+        [[nodiscard]] static std::array<T, N> apply(std::span<const std::string_view> input)
         {
             std::array<T, N> out;
             if (input.size() != N)
@@ -119,7 +118,7 @@ namespace frtclap::detail
     };
 
     template <typename T>
-    T parse_from_span(std::span<const std::string_view> input)
+    [[nodiscard]] T parse_from_span(std::span<const std::string_view> input)
     {
         return parse_from_span_impl<T>::apply(input);
     }

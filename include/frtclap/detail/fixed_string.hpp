@@ -16,7 +16,7 @@ namespace frtclap::detail
                 data[i] = str[i];
         }
 
-        consteval operator std::string_view() const noexcept
+        [[nodiscard]] consteval operator std::string_view() const noexcept
         {
             return std::string_view(data, size);
         }

@@ -7,7 +7,7 @@
 namespace frtclap
 {
     template <typename T>
-    T parse(int argc, char** argv)
+    [[nodiscard]] T parse(int argc, char** argv)
     {
         std::vector<std::string_view> args(argv, argv + argc);
 

@@ -6,7 +6,7 @@
 namespace frtclap
 {
     template <typename T>
-    constexpr auto tie_as_tuple(T& val) noexcept
+    [[nodiscard]] constexpr auto tie_as_tuple(T& val) noexcept
     {
         return detail::tie_as_tuple(val,
                                     size_t_<field_count_v<T>>{});

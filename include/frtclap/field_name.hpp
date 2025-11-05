@@ -14,7 +14,7 @@ namespace frtclap
     namespace detail
     {
         template <auto Ptr>
-        consteval std::string_view field_name_impl() noexcept
+        [[nodiscard]] consteval std::string_view field_name_impl() noexcept
         {
             std::string_view sv = std::source_location::current().function_name();
             sv.remove_suffix(sv.size() - sv.find_last_of(">"));
@@ -37,7 +37,7 @@ namespace frtclap
     } // namespace frtclap::detail
 
     template <typename T>
-    consteval auto field_names() noexcept
+    [[nodiscard]] consteval auto field_names() noexcept
     {
         return [] <std::size_t... Is> (std::index_sequence<Is...>)
                {

@@ -35,4 +35,13 @@ namespace frtclap::detail
     template <typename T>
     inline constexpr bool is_vector_v = is_vector<T>::value;
 
+    template <typename T>
+    struct is_container
+        : std::disjunction<is_vector<T>, is_array<T>>
+    {
+    };
+
+    template <typename T>
+    inline constexpr bool is_container_v = is_container<T>::value;
+
 } // namespace frtclap::detail

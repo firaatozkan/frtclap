@@ -12,7 +12,7 @@ namespace frtclap
     namespace detail
     {
         template <typename>
-        consteval std::string_view subcommand_name_impl()
+        [[nodiscard]] consteval std::string_view subcommand_name_impl()
         {
             constexpr std::string_view first_skip = "subcommand_name_impl<";
             constexpr std::string_view second_skip = ">(void)";
@@ -44,7 +44,7 @@ namespace frtclap
     } // namespace detail
 
     template <typename Subcommand>
-    consteval auto subcommand_names()
+    [[nodiscard]] consteval auto subcommand_names()
     {
         return [] <std::size_t... Is> (std::index_sequence<Is...>)
                {
